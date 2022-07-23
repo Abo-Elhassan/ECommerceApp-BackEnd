@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.DTOs.Product
+﻿using Infrastructure.DTOs.Category;
+
+namespace Infrastructure.DTOs.Product
 {
     public class ProductReadDTO
     {
@@ -6,8 +8,10 @@
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
+        public string Manufacturer { get; set; }
+
         public string PictureUrl { get; set; }
-        public string Category { get; set; }
+        public CategoryReadDTO Category { get; set; }
 
     }
 }

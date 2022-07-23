@@ -13,9 +13,14 @@ namespace Core.Repositories.GenericRepository
             _storecontext = storecontext;
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam)
         {
-            return await _storecontext.Set<T>().ToListAsync();
+            if (takeParam>20)
+            {
+                takeParam = 20;
+            }
+            int skip = takeParam * (pageNum - 1);
+            return await _storecontext.Set<T>().Skip(skip).Take(takeParam).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(Guid id)

@@ -13,10 +13,30 @@ namespace Core.Repositories.ProductsRepository
         {
             _storecontext = storecontext;
         }
-
-        public async Task<Product> GetProductCategoriesAsync(string CatName)
+        public async Task<List<Product>> GetProductCategoriesAsync(int pageNum,int takeParam)
         {
-            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(P => P.Category.CategoryName == CatName);
+            int skip = takeParam * (pageNum-1);
+            return await _storecontext.Products.Include(p => p.Category).Skip(skip).Take(takeParam).ToListAsync();
+        }
+        public async Task<Product> GetProductByIdCategoryAsync(Guid id)
+        {
+            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c=>c.Id==id);
+        }
+
+        public async Task<List<Product>> GetProductByNameAsync(string name)
+        {
+            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Name == name).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetProductByPriceAsync(decimal minPrice, decimal maxPrice)
+        {
+            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Price >= minPrice && c.Price <= maxPrice).ToListAsync();
+        }
+
+        public async Task<List<Product>> GetProductByCategoryAsync(string categoryName)
+        {
+            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Category.CategoryName == categoryName).ToListAsync();
         }
     }
+    
 }

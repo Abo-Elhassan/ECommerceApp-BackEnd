@@ -22,9 +22,9 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<CustomerReadDTO>>> GetResultAsync()
+        public async Task<ActionResult<List<CustomerReadDTO>>> GetResultAsync(int pageNum, int takeParam)
         {
-            var listOfCustomers = await _customererpository.GetAllAsync();
+            var listOfCustomers = await _customererpository.GetAllAsync(pageNum,takeParam);
             return _mapper.Map<List<CustomerReadDTO>>(listOfCustomers);
         }
     }

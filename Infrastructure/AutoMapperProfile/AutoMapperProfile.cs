@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Infrastructure.DTOs.Category;
 using Infrastructure.DTOs.Customer;
 using Infrastructure.DTOs.Product;
 
@@ -11,6 +12,7 @@ namespace Infrastructure.AutoMapperProfile
         {
             CreateMap<Customer, CustomerReadDTO>();
             CreateMap<Product, ProductReadDTO>();
+            CreateMap<Category, CategoryReadDTO>();
 
         }
     }
