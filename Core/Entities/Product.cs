@@ -9,10 +9,11 @@ namespace Core.Entities
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string PictureUrl { get; set; }
+        public string Manufacturer { get; set; }
         public Category Category { get; set; }
 
         [ForeignKey("Category")]
-        public Guid CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
 
 
