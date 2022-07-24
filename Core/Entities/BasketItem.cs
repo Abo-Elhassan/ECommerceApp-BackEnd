@@ -14,6 +14,6 @@ namespace Core.Entities
         public int NumberOfItem { get; set; }
         public string PictureUrl { get; set; }
         public string Manufacturer { get; set; }
-        public Category Category { get; set; }
+        public string Category { get; set; }
     }
 }
