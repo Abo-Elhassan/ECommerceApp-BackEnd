@@ -40,11 +40,14 @@ builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(conn
 #endregion
 
 #region Redis Connection
-builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
-{
-    var Configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
-    return ConnectionMultiplexer.Connect(Configuration);
-});
+//builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+//{
+//    var Configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+//    return ConnectionMultiplexer.Connect(Configuration);
+//});
+
+
+
 /*builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration["RedisCacheUrl"]; });
 */
 #endregion
