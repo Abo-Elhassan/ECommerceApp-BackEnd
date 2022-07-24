@@ -13,11 +13,6 @@ namespace Core.Repositories.ProductsRepository
         {
             _storecontext = storecontext;
         }
-        public async Task<List<Product>> GetProductCategoriesAsync(int pageNum,int takeParam)
-        {
-            int skip = takeParam * (pageNum-1);
-            return await _storecontext.Products.Include(p => p.Category).Skip(skip).Take(takeParam).ToListAsync();
-        }
         public async Task<Product> GetProductByIdCategoryAsync(Guid id)
         {
             return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c=>c.Id==id);

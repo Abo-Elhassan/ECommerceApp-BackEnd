@@ -35,7 +35,8 @@ namespace API.Controllers
         [HttpGet("category")]
         public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductsWithCategory(int pageNum, int takes)
         {
-            var listFromDb = await _productsRepository.GetProductCategoriesAsync(pageNum, takes);
+            var listFromDb = await _productsRepository.GetAllAsync(pageNum, takes,m => m.Category);
+            //var listFromDb2 = await _productsRepository.GetAllAsync(pageNum, takes, "Category");// the second overload for GetAllAsync function
             return _mapper.Map<List<ProductReadDTO>>(listFromDb);
         }
         #endregion
