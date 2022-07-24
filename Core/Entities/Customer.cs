@@ -1,13 +1,16 @@
-﻿namespace Core.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Core.Entities
 {
-    public class Customer
+    public class Customer : IdentityUser<Guid>
     {
-        public Guid CustomerId { get; set; }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Address { get; set; }
-        public string Phone { get; set; }
+        public string Street { get; set; }
         public string City { get; set; }
-        public string Email { get; set; }
+        public string State { get; set; }
+        public string ZipCode { get; set; }
+
     }
 }

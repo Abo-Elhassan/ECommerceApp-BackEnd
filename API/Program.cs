@@ -7,11 +7,15 @@ using Infrastructure.AutoMapperProfile;
 using API.Errors;
 using API.Middleware;
 using Core.Repositories.BasketRepository;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-#region default
+#region Default
 builder.Services.AddControllers();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -34,6 +38,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 #endregion
 
+#region Cors 
+
+var allowAll = "AllowAll";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(allowAll, builder =>
+    {
+        builder
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+
+});
+#endregion
+
+
 #region Database
 var connectionString = builder.Configuration.GetConnectionString("StoreDb");
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connectionString));
@@ -55,13 +77,48 @@ builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(conn
 #region Reposatories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+//builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 #endregion
 
 #region AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 #endregion
 
+#region Authentication
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "JwtAuth";
+    options.DefaultChallengeScheme = "JwtAuth";
+})
+ .AddJwtBearer("JwtAuth", options =>
+ {
+     var secretKey = builder.Configuration.GetValue<string>("SecretKey");
+     var keyInBytes = Encoding.ASCII.GetBytes(secretKey);
+     var key = new SymmetricSecurityKey(keyInBytes);
+
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         IssuerSigningKey = key,
+         ValidateIssuer = false,
+         ValidateAudience = false
+     };
+ });
+
+#endregion
+
+#region ASP.Net Identity 
+
+builder.Services.AddIdentity<Customer, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 8;
+    options.User.RequireUniqueEmail = true;
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+})
+.AddEntityFrameworkStores<StoreContext>();
+#endregion
 
 var app = builder.Build();
 
@@ -77,6 +134,10 @@ if (app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
+
+app.UseCors();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

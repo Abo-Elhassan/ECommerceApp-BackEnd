@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Core.Context
 {
-    public class StoreContext : DbContext
+    public class StoreContext : IdentityDbContext<Customer, IdentityRole<Guid>, Guid>
     {
         public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
@@ -24,80 +26,12 @@ namespace Core.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Seeding Customer
-            modelBuilder.Entity<Customer>().HasData(
+            #region DB Tables Name Configutaion
+            modelBuilder.Entity<Customer>().ToTable("User");
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
+            #endregion       
 
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Youssef",
-                       LastName = "Hassan",
-                       Address = " Mostakbal",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "Youssef@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Medhat",
-                       LastName = "Saleh",
-                       Address = " NasrCity",
-                       Phone = "01278956883",
-                       City = "Cairo",
-                       Email = "Medhat@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Mohamed",
-                       LastName = "Ahmed",
-                       Address = " Elsalam",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "Mohamed@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Mostafa",
-                       LastName = "Riyad",
-                       Address = " Faisal",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "Mostafa@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Alaa",
-                       LastName = "Abo EL-Hassan",
-                       Address = " Sabah",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "Alaa@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Hala",
-                       LastName = "Elsayed",
-                       Address = " suez",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "hala@joe.com"
-                   },
-                   new Customer
-                   {
-                       CustomerId = Guid.NewGuid(),
-                       FirstName = "Salma",
-                       LastName = "Hozein",
-                       Address = " suez",
-                       Phone = "01278956883",
-                       City = "Suez",
-                       Email = "Salma@joe.com"
-                   });
-            #endregion
+           
 
             #region Seeding Categories
 

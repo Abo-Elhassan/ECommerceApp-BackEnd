@@ -15,9 +15,9 @@ namespace Core.Repositories.CustomerRepository
             _storecontext = storecontext;
         }
 
-        public async Task<Customer> GetCustomerByEmail(string address)
+        public async Task<Customer> GetCustomerByEmail(string email)
         {
-            return await _storecontext.Customers.FirstOrDefaultAsync(x => x.Address == address);
+            return await _storecontext.Customers.FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<Customer> GetCustomerByFirstName(string firstName)
