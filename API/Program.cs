@@ -6,6 +6,7 @@ using Core.Repositories.ProductsRepository;
 using Infrastructure.AutoMapperProfile;
 using API.Errors;
 using API.Middleware;
+using Core.Repositories.BasketRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,9 +39,20 @@ var connectionString = builder.Configuration.GetConnectionString("StoreDb");
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connectionString));
 #endregion
 
+#region Redis Connection
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var Configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(Configuration);
+});
+/*builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration["RedisCacheUrl"]; });
+*/
+#endregion
+
 #region Reposatories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 #endregion
 
 #region AutoMapper
