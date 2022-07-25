@@ -14,7 +14,7 @@ namespace Core.Entities
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
         [Url]
-        [DataType(DataType.Url)]
+        [DataType(DataType.ImageUrl)]
         public string PictureUrl { get; set; }
         public string Manufacturer { get; set; }
         public Category Category { get; set; }
