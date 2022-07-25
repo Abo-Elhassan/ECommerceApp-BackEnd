@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Repositories.ProductsRepository;
 using Infrastructure.DTOs.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -21,7 +22,7 @@ namespace API.Controllers
         #region Get all Products without Categories
 
         [HttpGet("allProducts")]
-
+     
         public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetAllProducts(int pageNum, int takes)
         {
             var listFromDb = await _productsRepository.GetAllAsync(pageNum, takes);

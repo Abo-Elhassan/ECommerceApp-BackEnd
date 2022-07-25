@@ -8,6 +8,8 @@ using Infrastructure.DTOs.Account;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Services.Token;
 
 namespace API.Controllers
 {
@@ -26,15 +28,55 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
+            var email = User?.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByIdAsync(email);
+            return _mapper.Map<UserDto>(user);
+        }
+
+        #region saved for later
+        //[Authorize]
+        //[HttpGet("address")]
+        //public async Task<ActionResult<AddressDto>> GetCurrentUserAddress()
+        //{
+
+        //    var user = await _userManager.FindUserEmailAddress(HttpContext.User);
+        //    return _mapper.Map<AddressDto>(user.Address); ;
+        //} 
+
+
+        //[Authorize]
+        //[HttpPut("address")]
+        //public async Task<ActionResult<Address>> UpdateCurrentUserAddress(AddressDto address)
+        //{
+
+        //    var user = await _userManager.FindUserEmailAddress(HttpContext.User);
+        //    user.Address = _mapper.Map<Address>(address);
+        //    var result = await _userManager.UpdateAsync(user);
+
+        //    if (result.Succeeded)
+        //    {
+        //        return Ok(_mapper.Map<AddressDto>(user.Address));
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
+
+        #endregion
 
         [HttpPost]
         [Route("admin/register")]
         public async Task<ActionResult> RegisterAdmin(RegisterDto registerDTO)
         {
 
-       
+
             var newAdmin = _mapper.Map<Customer>(registerDTO);
-           
+
 
             var result = await _userManager.CreateAsync(newAdmin, registerDTO.Password);
             if (!result.Succeeded)
@@ -45,7 +87,7 @@ namespace API.Controllers
             await _userManager.AddClaimsAsync(newAdmin, new List<Claim>
             {
                 new Claim (ClaimTypes.NameIdentifier, newAdmin.Id.ToString()),
-                new Claim (ClaimTypes.Name, newAdmin.UserName),
+                new Claim (ClaimTypes.Name, newAdmin.Email),
                 new Claim (ClaimTypes.Role, "Admin"),
 
             });
@@ -100,12 +142,11 @@ namespace API.Controllers
                 return Unauthorized();
             }
 
+        
             var claims = await _userManager.GetClaimsAsync(loggingUser);
 
-            var secretKey = _configuration.GetValue<string>("SecretKey");
-            var keyInBytes = Encoding.ASCII.GetBytes(secretKey);
-            var key = new SymmetricSecurityKey(keyInBytes);
-            var keyWithAlgorithm = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+           
+            var keyWithAlgorithm = new SigningCredentials(TokenService.GetKey(), SecurityAlgorithms.HmacSha256);
 
 
             var expDate = DateTime.Now.AddHours(1);
@@ -116,11 +157,16 @@ namespace API.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return Ok(
-                new TokenDto
+                new UserDto
                 {
+                    UserName = loggingUser.UserName,
+                    Email = loggingUser.Email,
                     Token = tokenHandler.WriteToken(myJWT),
                     Exp = expDate
                 });
+           
+
         }
     }
 }
+

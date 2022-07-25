@@ -15,6 +15,8 @@ namespace Infrastructure.AutoMapperProfile
             CreateMap<Product, ProductReadDTO>();
             CreateMap<Category, CategoryReadDTO>();
             CreateMap<RegisterDto, Customer>();
+            CreateMap<Customer, UserDto>();
+            // CreateMap<Address, AddressDto>().ReverseMap();
 
         }
     }
