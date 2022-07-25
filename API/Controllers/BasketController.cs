@@ -1,5 +1,7 @@
-﻿using Core.Entities;
+﻿using AutoMapper;
+using Core.Entities;
 using Core.Repositories.BasketRepository;
+using Infrastructure.DTOs.Basket;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,12 @@ namespace API.Controllers
     {
         
         private readonly IBasketRepository _basketRepository;
+        private readonly IMapper _mapper;
 
-        public BasketController(IBasketRepository BasketRepository)
+        public BasketController(IBasketRepository BasketRepository,IMapper mapper)
         {
             _basketRepository = BasketRepository;
+            _mapper = mapper;
         }
         [HttpGet]
 
@@ -25,9 +29,10 @@ namespace API.Controllers
              //return new customerbasket and use id customer generate
         }
         [HttpPost]
-        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasket basket)
+        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDTO basket)
         {
-            var updateBasket = await _basketRepository.UpdateBasket(basket);
+            var customerBasket=_mapper.Map<CustomerBasketDTO,CustomerBasket>(basket);
+            var updateBasket = await _basketRepository.UpdateBasket(customerBasket);
             return Ok(updateBasket);
         }
         [HttpDelete]
