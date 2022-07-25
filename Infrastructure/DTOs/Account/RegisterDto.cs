@@ -9,7 +9,6 @@ namespace Infrastructure.DTOs.Account
 {
     public class RegisterDto
     {
-        [Display(Name = "User Name")]
         [Required(ErrorMessage = "User Name is Required")]
         [StringLength(20)]
         public string UserName { get; set; }

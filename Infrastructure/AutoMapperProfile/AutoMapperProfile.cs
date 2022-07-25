@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities;
 using Infrastructure.DTOs.Account;
+using Infrastructure.DTOs.Basket;
 using Infrastructure.DTOs.Category;
 using Infrastructure.DTOs.Customer;
 using Infrastructure.DTOs.Product;
@@ -15,6 +16,10 @@ namespace Infrastructure.AutoMapperProfile
             CreateMap<Product, ProductReadDTO>();
             CreateMap<Category, CategoryReadDTO>();
             CreateMap<RegisterDto, Customer>();
+            #region basket
+            CreateMap<CustomerBasketDTO, CustomerBasket>();
+            CreateMap<BasketItemDTO, BasketItem>();
+                #endregion
             CreateMap<Customer, UserDto>();
             // CreateMap<Address, AddressDto>().ReverseMap();
 
