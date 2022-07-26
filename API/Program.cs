@@ -11,10 +11,13 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using Infrastructure.Services.Token;
 using StackExchange.Redis;
+using Core.Repositories.OrderRepository;
+using Core.Repositories.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
-
+TokenService.Configuration = builder.Configuration;
 
 #region Default
 builder.Services.AddControllers();
@@ -53,53 +56,42 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
-
 #region Database
 var connectionString = builder.Configuration.GetConnectionString("StoreDb");
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connectionString));
 #endregion
 
 #region Redis Connection
-builder.Services.AddSingleton<IConnectionMultiplexer>(c => { 
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
     var Configuration = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
-   return ConnectionMultiplexer.Connect(Configuration);
+    return ConnectionMultiplexer.Connect(Configuration);
 });
 
 
+
+//builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration["RedisCacheUrl"]; });
 
 #endregion
 
 #region Reposatories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
 //builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
 #endregion
 
 #region AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-#endregion
-
-#region Authentication
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = "JwtAuth";
-    options.DefaultChallengeScheme = "JwtAuth";
-})
- .AddJwtBearer("JwtAuth", options =>
- {
-     var secretKey = builder.Configuration.GetValue<string>("SecretKey");
-     var keyInBytes = Encoding.ASCII.GetBytes(secretKey);
-     var key = new SymmetricSecurityKey(keyInBytes);
-
-     options.TokenValidationParameters = new TokenValidationParameters
-     {
-         IssuerSigningKey = key,
-         ValidateIssuer = false,
-         ValidateAudience = false
-     };
- });
-
 #endregion
 
 #region ASP.Net Identity 
@@ -114,6 +106,29 @@ builder.Services.AddIdentity<Customer, IdentityRole<Guid>>(options =>
 })
 .AddEntityFrameworkStores<StoreContext>();
 #endregion
+
+#region Authentication
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "JwtAuth";
+    options.DefaultChallengeScheme = "JwtAuth";
+})
+ .AddJwtBearer("JwtAuth", options =>
+ {
+ 
+
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         IssuerSigningKey = TokenService.GetKey(),
+         ValidateIssuer = false,
+         ValidateAudience = false
+     }; 
+ });
+
+#endregion
+
+
 
 var app = builder.Build();
 

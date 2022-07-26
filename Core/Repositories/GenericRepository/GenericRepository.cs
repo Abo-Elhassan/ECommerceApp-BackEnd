@@ -13,6 +13,18 @@ namespace Core.Repositories.GenericRepository
             _storecontext = storecontext;
         }
 
+        public void Add(T entity)
+        {
+            _storecontext.Set<T>().Add(entity);
+
+        }
+
+        public void Delete(T entity)
+        {
+            _storecontext.Set<T>().Remove(entity);
+
+        }
+
         public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam,string navProp=null)
         {
             if (takeParam>20)
@@ -41,6 +53,11 @@ namespace Core.Repositories.GenericRepository
             return await _storecontext.Set<T>().FindAsync(id);
         }
 
+        public void Update(T entity)
+        {
+            _storecontext.Set<T>().Attach(entity);
+            _storecontext.Entry(entity).State = EntityState.Modified;
+        }
     }
 
 
