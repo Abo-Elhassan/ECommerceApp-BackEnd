@@ -16,7 +16,6 @@ namespace Core.Context
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Customer> Customers => Set<Customer>();
-
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();
         public DbSet<DeliveryMethod> DeliveryMethods => Set<DeliveryMethod>();
@@ -29,9 +28,11 @@ namespace Core.Context
             #region DB Tables Name Configutaion
             modelBuilder.Entity<Customer>().ToTable("User");
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
-            #endregion       
-
-           
+            modelBuilder.Entity<Product>().Property(b => b.Price).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<DeliveryMethod>().Property(b => b.Price).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Order>().Property(b => b.Subtotal).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<OrderItem>().Property(b => b.Price).HasColumnType("decimal(18,2)");
+            #endregion
 
             #region Seeding Categories
 
