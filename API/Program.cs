@@ -13,6 +13,8 @@ using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Services.Token;
 using StackExchange.Redis;
+using Core.Repositories.OrderRepository;
+using Core.Repositories.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 TokenService.Configuration = builder.Configuration;
@@ -79,7 +81,16 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+//builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
 #endregion
 
 #region AutoMapper
