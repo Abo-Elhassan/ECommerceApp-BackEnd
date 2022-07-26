@@ -41,16 +41,13 @@ builder.Services.AddSwaggerGen();
 
 #region Cors 
 
-var allowAll = "AllowAll";
+//var allowAll = "AllowAll";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(allowAll, builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
     });
 
 });
@@ -133,7 +130,7 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 
