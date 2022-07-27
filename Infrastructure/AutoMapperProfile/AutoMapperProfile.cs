@@ -23,7 +23,7 @@ namespace Infrastructure.AutoMapperProfile
                 .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
                 .ForMember(d => d.DeliveryPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
             CreateMap<OrderItem, OrderItemDto>();
-         
+            CreateMap<CustomerBasketDTO, CustomerBasket>();
 
             //there's no an address class 
             CreateMap<AddressDto, Address>();

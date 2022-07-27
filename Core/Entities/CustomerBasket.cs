@@ -9,7 +9,7 @@ namespace Core.Entities
     public class CustomerBasket
 
     {
-        public CustomerBasket( string id)
+        public CustomerBasket(string id)
         {
             Id = id;
         }
