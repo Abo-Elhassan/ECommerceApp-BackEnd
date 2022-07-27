@@ -19,10 +19,12 @@ namespace Core.Entities.OrderAggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string PaymentIntentId { get; set; }
 
-        public decimal GetTotal()
+        public decimal Total
         {
-            return Subtotal + DeliveryMethod.Price;
-        }
+            get {
+                return Subtotal + DeliveryMethod.Price;
+                }
+            }
         public Order()
          {
          }

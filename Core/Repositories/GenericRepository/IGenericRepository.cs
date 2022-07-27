@@ -6,6 +6,7 @@ namespace Core.Repositories.GenericRepository
     {
         Task<IReadOnlyList<T>> GetAllAsync<Tprop>(int pageNum, int takeParam, Expression<Func<T, Tprop>> navProp = null);
         Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam, string navProp = null);
+        Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetByIdAsync(Guid id);
 
         void Add(T entity);

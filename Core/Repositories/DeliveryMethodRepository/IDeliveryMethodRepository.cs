@@ -10,6 +10,7 @@ namespace Core.Repositories.DeliveryMethodRepository
 {
     public interface IDeliveryMethodRepository : IGenericRepository<DeliveryMethod>
     {
-        Task<DeliveryMethod> GetDeliveryMethodByIdAsync(int id);
+        
+        
     }
 }

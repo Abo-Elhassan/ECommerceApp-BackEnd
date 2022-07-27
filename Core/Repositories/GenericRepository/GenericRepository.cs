@@ -48,6 +48,11 @@ namespace Core.Repositories.GenericRepository
                 await _storecontext.Set<T>().Include(navProp).Skip(skip).Take(takeParam).ToListAsync();
         }
 
+        public async Task<IReadOnlyList<T>> GetAllAsync()
+        {
+            return await _storecontext.Set<T>().ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(Guid id)
         {
             return await _storecontext.Set<T>().FindAsync(id);

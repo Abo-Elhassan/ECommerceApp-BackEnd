@@ -20,13 +20,15 @@ namespace Core.Repositories.OrderRepository
         //private readonly IProductRepository _productRepo;
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly StoreContext _storeContext;
 
-        public OrderRepository(IBasketRepository basketRepo, IUnitOfWork unitOfWork)
+        public OrderRepository(IBasketRepository basketRepo, IUnitOfWork unitOfWork , StoreContext storeContext)
 
             ////IDeliveryMethodRepository deliveryMethodRepo,
             ////IProductRepository productRepo,  StoreContext storecontext) : base(storecontext)
         {
             _unitOfWork = unitOfWork;
+            _storeContext = storeContext;
             ////_deliveryMethodRepo = deliveryMethodRepo;
             ////_productRepo = productRepo;
             _basketRepo = basketRepo;
@@ -75,29 +77,22 @@ namespace Core.Repositories.OrderRepository
             return order;
         }
 
-        public Task<Order> CreateOrderAsync(Order order, int delieveryMethodId, string basketId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CreateOrderAsync(string email, int deliveryMethodId, string basketId, Address address)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
         }
 
-        public Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
+        public  Order GetOrdersForUserAsync(int id, string buyerEmail)
         {
-            throw new NotImplementedException();
+            return _storeContext.Set<Order>().FirstOrDefault(u => u.Id == id && u.BuyerEmail == buyerEmail);
         }
 
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public IReadOnlyList<Order> GetOrdersForUserAsync(string buyerEmail)
         {
-            throw new NotImplementedException();
+            return _storeContext.Set<Order>().Where(u => u.BuyerEmail == buyerEmail).ToList();
+
         }
     }
 }

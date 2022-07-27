@@ -1,6 +1,7 @@
 ﻿using Core.Context;
 using Core.Entities.OrderAggregate;
 using Core.Repositories.GenericRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Repositories.DeliveryMethodRepository
 {
-    public class DeliveryMethodRepository : GenericRepository<DeliveryMethod> , IDeliveryMethodRepository
+    public class DeliveryMethodRepository : GenericRepository<DeliveryMethod>// IDeliveryMethodRepository
     {
         private readonly StoreContext _storecontext;
 
@@ -18,10 +19,12 @@ namespace Core.Repositories.DeliveryMethodRepository
             _storecontext = storecontext;
         }
 
-        public async Task<DeliveryMethod> GetDeliveryMethodByIdAsync(int id)
-        {
-            return await _storecontext.Set<DeliveryMethod>().FindAsync(id);
+        //public async Task<DeliveryMethod> GetDeliveryMethodByIdAsync(int id)
+        //{
+        //    return await _storecontext.Set<DeliveryMethod>().FindAsync(id);
 
-        }
+        //}
+
+       
     }
 }
