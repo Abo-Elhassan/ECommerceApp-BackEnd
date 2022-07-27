@@ -13,7 +13,7 @@ namespace Core.Repositories.GenericRepository
             _storecontext = storecontext;
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam,string navProp=null)
+        public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam, string navProp = null)
         {
             if (takeParam>20)
             {
@@ -24,7 +24,8 @@ namespace Core.Repositories.GenericRepository
             return navProp is null ? await _storecontext.Set<T>().Skip(skip).Take(takeParam).ToListAsync() :
                 await _storecontext.Set<T>().Include(navProp).Skip(skip).Take(takeParam).ToListAsync();
         }
-        public async Task<IReadOnlyList<T>> GetAllAsync<Tprop>(int pageNum, int takeParam, Expression<Func<T,Tprop>> navProp=null)
+
+        public async Task<List<T>> GetAllAsync<Tprop>(int pageNum, int takeParam, Expression<Func<T, Tprop>> navProp = null)
         {
             if (takeParam > 20)
             {
@@ -41,6 +42,7 @@ namespace Core.Repositories.GenericRepository
             return await _storecontext.Set<T>().FindAsync(id);
         }
 
+        
     }
 
 
