@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Infrastructure.DTOs.Account;
 using Infrastructure.DTOs.Basket;
 using Infrastructure.DTOs.Category;
@@ -14,15 +15,15 @@ namespace Infrastructure.AutoMapperProfile
         public AutoMapperProfile()
         {
             CreateMap<Customer, CustomerReadDTO>();
+            CreateMap<Customer, UserDto>();
             CreateMap<Product, ProductReadDTO>();
             CreateMap<Category, CategoryReadDTO>();
             CreateMap<RegisterDto, Customer>();
-            #region basket
-            CreateMap<CustomerBasketDTO, CustomerBasket>();
-            CreateMap<BasketItemDTO, BasketItem>();
-
-                #endregion
-            CreateMap<Customer, UserDto>();
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
+                .ForMember(d => d.DeliveryPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
+            CreateMap<OrderItem, OrderItemDto>();
+         
 
             //there's no an address class 
             CreateMap<AddressDto, Address>();
