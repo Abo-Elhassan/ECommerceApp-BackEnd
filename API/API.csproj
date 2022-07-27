@@ -30,4 +30,46 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\Laptops\01-Dell_Vostoro.jpg" />
+    <None Include="wwwroot\images\Laptops\01-Dell_Vostoro.png" />
+    <None Include="wwwroot\images\Laptops\02-Mac.jpg" />
+    <None Include="wwwroot\images\Laptops\02-Mac.png" />
+    <None Include="wwwroot\images\Laptops\03-lenovo.jpg" />
+    <None Include="wwwroot\images\Laptops\03-lenovo.png" />
+    <None Include="wwwroot\images\Laptops\04-Hp.jpg" />
+    <None Include="wwwroot\images\Laptops\04-Hp.png" />
+    <None Include="wwwroot\images\Laptops\05-alien.jpg" />
+    <None Include="wwwroot\images\Laptops\05-alien.png" />
+    <None Include="wwwroot\images\Mobiles\01-A52.jpg" />
+    <None Include="wwwroot\images\Mobiles\02-Iphone13.jpg" />
+    <None Include="wwwroot\images\Mobiles\03-lenovo-k13.jpg" />
+    <None Include="wwwroot\images\Mobiles\04-Oppo-A55.jpg" />
+    <None Include="wwwroot\images\Mobiles\05-Redmi-10C.jpg" />
+    <None Include="wwwroot\images\Tablets\01-nokia.jpg" />
+    <None Include="wwwroot\images\Tablets\01-nokia.png" />
+    <None Include="wwwroot\images\Tablets\02-huawei.jpg" />
+    <None Include="wwwroot\images\Tablets\02-huawei.png" />
+    <None Include="wwwroot\images\Tablets\03-ipad.jpg" />
+    <None Include="wwwroot\images\Tablets\03-ipad.png" />
+    <None Include="wwwroot\images\Tablets\04-alcatel.jpg" />
+    <None Include="wwwroot\images\Tablets\04-alcatel.png" />
+    <None Include="wwwroot\images\Tablets\05-sam.jpg" />
+    <None Include="wwwroot\images\Tablets\05-sam.png" />
+    <None Include="wwwroot\images\Watches\01-Xiaomi.jpg" />
+    <None Include="wwwroot\images\Watches\01-Xiaomi.png" />
+    <None Include="wwwroot\images\Watches\02-huawei.jpg" />
+    <None Include="wwwroot\images\Watches\02-huawei.png" />
+    <None Include="wwwroot\images\Watches\03-sam.jpg" />
+    <None Include="wwwroot\images\Watches\03-sam.png" />
+    <None Include="wwwroot\images\Watches\04-im.jpg" />
+    <None Include="wwwroot\images\Watches\04-im.png" />
+    <None Include="wwwroot\images\Watches\05-joy.jpg" />
+    <None Include="wwwroot\images\Watches\05-joy.png" />
+  </ItemGroup>
+
 </Project>
