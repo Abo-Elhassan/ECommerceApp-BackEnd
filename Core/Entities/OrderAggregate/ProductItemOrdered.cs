@@ -13,7 +13,7 @@ namespace Core.Entities.OrderAggregate
         {
         }
 
-        public ProductItemOrdered(int productItemOrderedId, string productName, string pictureUrl)
+        public ProductItemOrdered(Guid productItemOrderedId, string productName, string pictureUrl)
         {
             ProductItemOrderedId = productItemOrderedId;
             ProductName = productName;
@@ -21,7 +21,7 @@ namespace Core.Entities.OrderAggregate
         }
 
         //there's no productid prop because it dependent on the order it self (product owned by Order)
-        public int ProductItemOrderedId { get; set; }
+        public Guid ProductItemOrderedId { get; set; }
         public string ProductName { get; set; }
         public string PictureUrl { get; set; }
     }

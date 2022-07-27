@@ -13,6 +13,8 @@ using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Infrastructure.Services.Token;
 using StackExchange.Redis;
+using Core.Repositories.OrderRepository;
+using Core.Repositories.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 TokenService.Configuration = builder.Configuration;
@@ -42,16 +44,13 @@ builder.Services.AddSwaggerGen();
 
 #region Cors 
 
-var allowAll = "AllowAll";
+//var allowAll = "AllowAll";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(allowAll, builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
     });
 
 });
@@ -79,7 +78,16 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+//builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
 #endregion
 
 #region AutoMapper
@@ -137,7 +145,7 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 

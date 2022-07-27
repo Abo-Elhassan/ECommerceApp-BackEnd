@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +14,9 @@ namespace Core.Entities.OrderAggregate
         {
         }
 
-        public OrderItem(int id, ProductItemOrdered itemOrdered, decimal price, int quantity)
+        public OrderItem(ProductItemOrdered itemOrdered, decimal price, int quantity)
         {
-            Id = id;
+            
             ItemOrdered = itemOrdered;
             Price = price;
             Quantity = quantity;

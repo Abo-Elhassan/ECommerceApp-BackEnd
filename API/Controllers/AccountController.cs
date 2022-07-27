@@ -28,11 +28,11 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
+       [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var email = User?.FindFirstValue(ClaimTypes.Email);
+            var email = HttpContext.User?.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByIdAsync(email);
             return _mapper.Map<UserDto>(user);
         }
@@ -87,7 +87,7 @@ namespace API.Controllers
             await _userManager.AddClaimsAsync(newAdmin, new List<Claim>
             {
                 new Claim (ClaimTypes.NameIdentifier, newAdmin.Id.ToString()),
-                new Claim (ClaimTypes.Name, newAdmin.Email),
+                new Claim (ClaimTypes.Email, newAdmin.Email),
                 new Claim (ClaimTypes.Role, "Admin"),
 
             });

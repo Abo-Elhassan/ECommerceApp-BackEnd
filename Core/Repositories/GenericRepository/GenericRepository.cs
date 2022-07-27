@@ -13,7 +13,19 @@ namespace Core.Repositories.GenericRepository
             _storecontext = storecontext;
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam, string navProp = null)
+        public void Add(T entity)
+        {
+            _storecontext.Set<T>().Add(entity);
+
+        }
+
+        public void Delete(T entity)
+        {
+            _storecontext.Set<T>().Remove(entity);
+
+        }
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(int pageNum, int takeParam,string navProp=null)
         {
             if (takeParam>20)
             {
@@ -37,12 +49,21 @@ namespace Core.Repositories.GenericRepository
                 await _storecontext.Set<T>().Include(navProp).Skip(skip).Take(takeParam).ToListAsync();
         }
 
+        public async Task<IReadOnlyList<T>> GetAllAsync()
+        {
+            return await _storecontext.Set<T>().ToListAsync();
+        }
+
         public async Task<T> GetByIdAsync(Guid id)
         {
             return await _storecontext.Set<T>().FindAsync(id);
         }
 
-        
+        public void Update(T entity)
+        {
+            _storecontext.Set<T>().Attach(entity);
+            _storecontext.Entry(entity).State = EntityState.Modified;
+        }
     }
 
 
