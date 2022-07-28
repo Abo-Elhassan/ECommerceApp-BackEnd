@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Core.Entities;
 using Core.Repositories.ProductsRepository;
+using Infrastructure.DTOs.Category;
 using Infrastructure.DTOs.Product;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -23,9 +25,9 @@ namespace API.Controllers
 
         [HttpGet("allProducts")]
 
-        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetAllProducts(int pageNum, int takes)
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetAllProducts(int pageNum = 1, int pageSize = 10)
         {
-            var listFromDb = await _productsRepository.GetAllAsync(pageNum, takes, x => x.Category);
+            var listFromDb = await _productsRepository.GetAllAsync(pageNum, pageSize, x => x.Category);
             return _mapper.Map<List<ProductReadDTO>>(listFromDb);
         }
 
@@ -34,9 +36,9 @@ namespace API.Controllers
         #region Get all Products with Categories
         // GET: api/Products
         [HttpGet("category")]
-        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductsWithCategory(int pageNum, int takes)
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductsWithCategory(int pageNum=1, int pageSize=10)
         {
-            var listFromDb = await _productsRepository.GetAllAsync(pageNum, takes, m => m.Category);
+            var listFromDb = await _productsRepository.GetAllAsync(pageNum, pageSize, m => m.Category);
             //var listFromDb2 = await _productsRepository.GetAllAsync(pageNum, takes, "Category");// the second overload for GetAllAsync function
             return _mapper.Map<List<ProductReadDTO>>(listFromDb);
         }
@@ -78,7 +80,7 @@ namespace API.Controllers
         [HttpGet("product/name")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<List<ProductReadDTO>>> GetProductByName(string name, string searchQuery, int pageNum = 1, int pageSize = 10)
+        public async Task<ActionResult<List<ProductReadDTO>>> GetProductByName(string name =null, string searchQuery = null, int pageNum = 1, int pageSize = 10)
         {
             if (pageSize>20)
             {
@@ -93,9 +95,9 @@ namespace API.Controllers
         #endregion
         #region Search By Product Price
         [HttpGet("category/price")]
-        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductByPrice(decimal minPrice, decimal maxPrice, int pageNum = 1, int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductByPrice(string sort, int pageNum = 1, int pageSize = 10)
         {
-            var product = await _productsRepository.GetProductByPriceAsync(minPrice, maxPrice, pageNum, pageSize);
+            var product = await _productsRepository.GetProductBySortAsync(sort, pageNum, pageSize);
 
             return _mapper.Map<List<ProductReadDTO>>(product);
         }
@@ -113,5 +115,14 @@ namespace API.Controllers
             return _mapper.Map<List<ProductReadDTO>>(product);
         }
         #endregion
+
+        [HttpGet("categories")]
+        
+        public async Task<ActionResult<List<CategoryReadDTO>>> GetAllCategories()
+        {
+            var categories= await _productsRepository.GetCategories();
+            return _mapper.Map<List<CategoryReadDTO>>(categories);
+
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Core.Repositories.ProductsRepository
             if (!string.IsNullOrEmpty(name))
             {
                 name=name.Trim();
-                collection = collection.Where(p => p.Name == name);
+                collection = collection.Where(p => p.Name == name || p.Category.CategoryName==name);
             }
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -46,19 +46,48 @@ namespace Core.Repositories.ProductsRepository
 
         }
 
-        public async Task<List<Product>> GetProductByPriceAsync(decimal minPrice, decimal maxPrice, int pageNum, int pageSize)
+        public async Task<List<Product>> GetProductBySortAsync(string sort, int pageNum, int pageSize)
         {
+            if (sort == "name")
+            {
+                return await _storecontext.Products
+                .Include(c => c.Category)
+                .OrderBy(p => p.Name)
+                .Skip(pageSize * (pageNum-1))
+                .Take(pageSize)
+                .ToListAsync();
+            }
+            if (sort == "PriceAsc") { 
             return await _storecontext.Products
-                .Where(c => c.Price >= minPrice && c.Price <= maxPrice)
                 .Include(c => c.Category)
                 .OrderBy(p => p.Price)
                 .Skip(pageSize * (pageNum-1))
                 .Take(pageSize)       
                 .ToListAsync();
+            }
+            if (sort == "PriceDesc") { 
+                return await _storecontext.Products
+                    .Include(c => c.Category)
+                    .OrderByDescending(p => p.Price)
+                    .Skip(pageSize * (pageNum-1))
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
+            return await _storecontext.Products.ToListAsync();
+
         }
 
         public async Task<List<Product>> GetProductByCategoryAsync(string categoryName, int pageNum, int pageSize)
         {
+
+            if (categoryName == "All")
+            {
+                return await _storecontext.Products.Skip(pageSize * (pageNum-1))
+                .Take(pageSize)
+                .OrderBy(p => p.Name)
+                .Include(c => c.Category)
+                .ToListAsync();
+            }
             return await _storecontext.Products.Include(p => p.Category)
                 .Where(c => c.Category.CategoryName == categoryName)
                 .Skip(pageSize * (pageNum-1))
@@ -66,6 +95,11 @@ namespace Core.Repositories.ProductsRepository
                 .OrderBy(p => p.Name)
                 .Include(c => c.Category)
                 .ToListAsync();
+        }
+
+        public async Task<List<Category>> GetCategories()
+        {
+            return await _storecontext.Categories.ToListAsync();
         }
     }
 

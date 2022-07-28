@@ -8,7 +8,6 @@ namespace Infrastructure.DTOs.Category
 {
     public class CategoryReadDTO
     {
-        public int CategoryId { get; set; }
         public string CategoryName { get; set; }
     }
 }

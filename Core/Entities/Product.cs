@@ -9,9 +9,8 @@ namespace Core.Entities
         [Required]
         public string Name { get; set; }
         [DataType(DataType.MultilineText)]
-
         public string Description { get; set; }
-        [DataType(DataType.Currency)]
+        [Column(TypeName ="money")]
         public decimal Price { get; set; }
         [Url]
         [DataType(DataType.ImageUrl)]
