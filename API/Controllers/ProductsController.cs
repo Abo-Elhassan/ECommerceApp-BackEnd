@@ -76,6 +76,8 @@ namespace API.Controllers
 
         #region Search By Product Name
         [HttpGet("product/name")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<List<ProductReadDTO>>> GetProductByName(string name, string searchQuery, int pageNum = 1, int pageSize = 10)
         {
             if (pageSize>20)
