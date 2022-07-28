@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
@@ -45,15 +45,15 @@ namespace API.Controllers
         #endregion
 
         #region Get Product Without Category
-        // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductReadDTO>> GetProduct(Guid id)
-        {
-            var product = await _productsRepository.GetByIdAsync(id);
-            if (product is null)
+            // GET: api/Products/5
+            [HttpGet("{id}")]
+            public async Task<ActionResult<ProductReadDTO>> GetProduct(Guid id)
             {
-                return NotFound();
-            }
+                var product = await _productsRepository.GetByGuidIdAsync(id);
+                if (product is null)
+                {
+                    return NotFound();
+                }
 
             return _mapper.Map<ProductReadDTO>(product);
         }

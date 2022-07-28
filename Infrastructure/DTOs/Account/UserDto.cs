@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DTOs.Account
 {
-    public class UserDto
+    public class UserReadDto
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string Token { get; set; }
-        public DateTime Exp { get; set; }
+        
     }
 }

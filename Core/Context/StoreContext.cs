@@ -25,13 +25,11 @@ namespace Core.Context
         {
             base.OnModelCreating(modelBuilder);
 
+
             #region DB Tables Name Configutaion
             modelBuilder.Entity<Customer>().ToTable("User");
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
-            modelBuilder.Entity<Product>().Property(b => b.Price).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<DeliveryMethod>().Property(b => b.Price).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<Order>().Property(b => b.Subtotal).HasColumnType("decimal(18,2)");
-            modelBuilder.Entity<OrderItem>().Property(b => b.Price).HasColumnType("decimal(18,2)");
+
             #endregion
 
             #region Seeding Categories

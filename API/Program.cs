@@ -15,6 +15,8 @@ using Infrastructure.Services.Token;
 using StackExchange.Redis;
 using Core.Repositories.OrderRepository;
 using Core.Repositories.UnitOfWork;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 TokenService.Configuration = builder.Configuration;
@@ -39,7 +41,28 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+
+    var securitySchema = new OpenApiSecurityScheme
+    {
+        Description = "JWT Auth Bearer Scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+        }
+    };
+
+    c.AddSecurityDefinition("Bearer", securitySchema);
+    var securityRequirement = new OpenApiSecurityRequirement { { securitySchema, new[] { "Bearer" } } };
+    c.AddSecurityRequirement(securityRequirement);
+});
 #endregion
 
 #region Cors 
@@ -128,6 +151,15 @@ builder.Services.AddAuthentication(options =>
 
 #endregion
 
+#region Autorization
+
+builder.Services.AddAuthorization(options =>
+
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"))
+    
+);
+#endregion
+
 
 
 var app = builder.Build();
@@ -138,7 +170,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 };
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");

@@ -54,15 +54,22 @@ namespace Core.Repositories.GenericRepository
             return await _storecontext.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<T> GetByGuidIdAsync(Guid id)
+        {
+            return await _storecontext.Set<T>().FindAsync(id);
+        }
+
+     
+
+        public async Task<T> GetByIntIdAsync(int id)
         {
             return await _storecontext.Set<T>().FindAsync(id);
         }
 
         public void Update(T entity)
         {
-            _storecontext.Set<T>().Attach(entity);
-            _storecontext.Entry(entity).State = EntityState.Modified;
+            _storecontext.Set<T>().Update(entity);
+           
         }
     }
 

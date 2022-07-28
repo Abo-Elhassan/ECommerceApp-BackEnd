@@ -11,63 +11,68 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Infrastructure.Services.Token;
 
+using API.Extensions;
+using Infrastructure.DTOs.Order;
+
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+
         private readonly UserManager<Customer> _userManager;
         private readonly IMapper _mapper;
 
-        public AccountController(IConfiguration configuration, UserManager<Customer> userManager, IMapper mapper)
+        public AccountController( UserManager<Customer> userManager, IMapper mapper)
         {
-            _configuration = configuration;
+     
             _userManager = userManager;
             _mapper = mapper;
         }
 
        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<ActionResult<UserReadDto>> GetCurrentUser()
         {
             var email = HttpContext.User?.FindFirstValue(ClaimTypes.Email);
-            var user = await _userManager.FindByIdAsync(email);
-            return _mapper.Map<UserDto>(user);
+            var user = await _userManager.FindByEmailAsync(email);
+            return _mapper.Map<UserReadDto>(user);
         }
 
-        #region saved for later
-        //[Authorize]
-        //[HttpGet("address")]
-        //public async Task<ActionResult<AddressDto>> GetCurrentUserAddress()
-        //{
+        
+        [Authorize]
+        [HttpGet]
+        [Route("address")]
+        public async Task<ActionResult<AddressDto>> GetCurrentUserAddress()
+        {
 
-        //    var user = await _userManager.FindUserEmailAddress(HttpContext.User);
-        //    return _mapper.Map<AddressDto>(user.Address); ;
-        //} 
+            var user = await _userManager.FindUserByEmailIncludeAddress(HttpContext.User);
+            return _mapper.Map<AddressDto>(user.Address); ;
+        }
 
 
-        //[Authorize]
-        //[HttpPut("address")]
-        //public async Task<ActionResult<Address>> UpdateCurrentUserAddress(AddressDto address)
-        //{
+        [Authorize]
+        [HttpPut]
+        [Route("address")]
+        public async Task<ActionResult<Address>> UpdateCurrentUserAddress(AddressDto address)
+        {
 
-        //    var user = await _userManager.FindUserEmailAddress(HttpContext.User);
-        //    user.Address = _mapper.Map<Address>(address);
-        //    var result = await _userManager.UpdateAsync(user);
+            var user = await _userManager.FindUserByEmailIncludeAddress(HttpContext.User);
+            user.Address = _mapper.Map<Address>(address);
+            var result = await _userManager.UpdateAsync(user);
 
-        //    if (result.Succeeded)
-        //    {
-        //        return Ok(_mapper.Map<AddressDto>(user.Address));
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
+            if (result.Succeeded)
+            {
+                return Ok(_mapper.Map<AddressDto>(user.Address));
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
 
-        #endregion
+   
 
         [HttpPost]
         [Route("admin/register")]
@@ -115,7 +120,7 @@ namespace API.Controllers
             await _userManager.AddClaimsAsync(newUser, new List<Claim>
             {
                 new Claim (ClaimTypes.NameIdentifier, newUser.Id.ToString()),
-                new Claim (ClaimTypes.Name, newUser.UserName),
+                new Claim (ClaimTypes.Email, newUser.Email),
                 new Claim (ClaimTypes.Role, "User"),
 
             });
@@ -157,12 +162,12 @@ namespace API.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return Ok(
-                new UserDto
+                new TokenDto
                 {
-                    UserName = loggingUser.UserName,
+                    
                     Email = loggingUser.Email,
                     Token = tokenHandler.WriteToken(myJWT),
-                    Exp = expDate
+                    ExpireDate = expDate
                 });
            
 
