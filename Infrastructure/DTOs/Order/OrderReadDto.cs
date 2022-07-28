@@ -8,13 +8,13 @@ using Core.Entities;
 
 namespace Infrastructure.DTOs.Order
 {
-    public class OrderToReturnDto
+    public class OrderReadDto
     {
         
             public int Id { get; set; }
             public string BuyerEmail { get; set; }
             public DateTimeOffset OrderDate { get; set; }
-            public Address ShipToAddress { get; set; }
+            public AddressDto ShipToAddress { get; set; }
             public string DeliveryMethod { get; set; }
             public decimal DeliveryPrice { get; set; }
             public IReadOnlyList<OrderItemDto> OrderItems { get; set; }

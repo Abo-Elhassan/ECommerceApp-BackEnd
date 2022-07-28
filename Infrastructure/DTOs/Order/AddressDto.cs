@@ -11,14 +11,12 @@ namespace Infrastructure.DTOs.Order
     {
         [Required]
         public string Street { get; set; }
-
         [Required]
         public string City { get; set; }
-
         [Required]
         public string State { get; set; }
-
         [Required]
+        [RegularExpression("[0-9]{5}")]
         public string ZipCode { get; set; }
     }
 }

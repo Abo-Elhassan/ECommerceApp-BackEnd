@@ -9,28 +9,24 @@ namespace Infrastructure.DTOs.Account
 {
     public class RegisterDto
     {
-        [Required(ErrorMessage = "User Name is Required")]
-        [StringLength(20)]
-        public string UserName { get; set; }
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
         [Required]
+        [StringLength(50)]
+        public string UserName { get; set; }
+     
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
-        [DataType(DataType.Password)]
+      
         [Required]
         public string Password { get; set; }
-        public int PhoneNumber { get; set; }
-        [Display(Name = "First Name")]
-        [Required(ErrorMessage = "First Name is Required")]
+        [RegularExpression("01[0-9]{9}")]
+        public string PhoneNumber { get; set; }
+        [Required]
         [StringLength(20)]
         public string FirstName { get; set; }
-        [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Last Name is Required ")]
+        [Required]
         [StringLength(20)]
         public string LastName { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string ZipCode { get; set; }
+       
     }
 }
