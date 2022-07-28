@@ -24,7 +24,7 @@ namespace Infrastructure.AutoMapperProfile
             CreateMap<Category, CategoryReadDTO>();
 
             CreateMap<RegisterDto, Customer>();
-            CreateMap<Order, OrderToReadDto>()
+            CreateMap<Order, OrderReadDto>()
                 .ForMember(d => d.DeliveryMethod, o => o.MapFrom(s => s.DeliveryMethod.ShortName))
                 .ForMember(d => d.DeliveryPrice, o => o.MapFrom(s => s.DeliveryMethod.Price));
             CreateMap<OrderItem, OrderItemDto>();
