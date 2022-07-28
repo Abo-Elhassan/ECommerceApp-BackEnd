@@ -7,51 +7,56 @@ using Core.Repositories.OrderRepository;
 using Infrastructure.DTOs.Order;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
 
-        public OrderController(IOrderRepository orderRepository, IMapper mapper)
+        public OrdersController(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult> CreateOrder(OrderWriteDto orderDto)
         {
-            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+            var email = User.FindFirstValue(ClaimTypes.Email);
 
-            var address = _mapper.Map<AddressDto, Address>(orderDto.ShipToAddress);
+            var address = _mapper.Map<Address>(orderDto.ShipToAddress);
 
             var order = await _orderRepository.CreateOrderAsync(email, orderDto.DeliveryMethodId, orderDto.BasketId, address);
 
             //validation for empty order
-            if (order == null) return BadRequest(new ApiResponse(400, "Problem creating order"));
+            if (order == null)
+            {
+                return BadRequest(new ApiResponse(400, "Problem creating order"));
+            }
+               
 
-            return Ok(order);
+            return Ok(_mapper.Map<OrderReadDto>(order));
 
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<OrderDto>> GetOrdersForUser()
+        public ActionResult<IReadOnlyList<OrderReadDto>> GetOrdersForUser()
         {
             var email = User.RetrieveEmailFromPrincipal();
 
             var orders = _orderRepository.GetOrdersForUserAsync(email);
 
-            return Ok(_mapper.Map<IReadOnlyList<OrderToReturnDto>>(orders));
+            return Ok(_mapper.Map<IReadOnlyList<OrderReadDto>>(orders));
         }
 
         [HttpGet("{id}")]
-        public ActionResult<OrderToReturnDto> GetOrderByIdForUser(int id)
+        public ActionResult<OrderReadDto> GetOrderByIdForUser(int id)
         {
             var email = User.RetrieveEmailFromPrincipal();
 
@@ -59,7 +64,7 @@ namespace API.Controllers
 
             if (order == null) return NotFound(new ApiResponse(404));
 
-            return _mapper.Map<OrderToReturnDto>(order);
+            return _mapper.Map<OrderReadDto>(order);
         }
 
         [HttpGet("deliveryMethods")]

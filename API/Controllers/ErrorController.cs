@@ -5,7 +5,8 @@ using API.Errors;
 namespace API.Controllers
 {
     [Route("errors/{code}")]
-    public class ErrorController : BaseController
+    [ApiController]
+    public class ErrorController : ControllerBase
     {
         [HttpGet]
         public IActionResult Error(int code)

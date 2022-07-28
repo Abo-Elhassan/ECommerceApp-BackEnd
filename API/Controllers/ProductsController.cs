@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
-    public class ProductsController : BaseController
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productsRepository;
         private readonly IMapper _mapper;
@@ -47,7 +47,7 @@ namespace API.Controllers
             [HttpGet("{id}")]
             public async Task<ActionResult<ProductReadDTO>> GetProduct(Guid id)
             {
-                var product = await _productsRepository.GetByIdAsync(id);
+                var product = await _productsRepository.GetByGuidIdAsync(id);
                 if (product is null)
                 {
                     return NotFound();
