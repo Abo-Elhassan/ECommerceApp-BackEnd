@@ -2,13 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Entities.OrderAggregate
 {
-    public class OrderItem // : BaseEntity done
+    public class OrderItem 
     {
         public OrderItem()
         {
@@ -23,6 +24,8 @@ namespace Core.Entities.OrderAggregate
         }
         public int Id { get; set; }
         public ProductItemOrdered ItemOrdered { get; set; }
+
+        [Column(TypeName = "money")]
         public decimal Price { get; set; }
         public int Quantity { get; set; }
 

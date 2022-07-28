@@ -5,12 +5,11 @@ namespace Core.Entities
 {
     public class Customer : IdentityUser<Guid>
     {
-        [Display(Name = "First Name")]
-        [Required(ErrorMessage = "First Name is Required")]
+
+        [Required]
         [StringLength(20)]
         public string FirstName { get; set; }
-        [Display(Name = "Last Name")]
-        [Required(ErrorMessage = "Last Name is Required ")]
+        [Required]
         [StringLength(20)]
         public string LastName { get; set; }
 
