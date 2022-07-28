@@ -16,6 +16,6 @@ namespace Core.Repositories.OrderRepository
         IReadOnlyList<Order> GetOrdersForUserAsync(string buyerEmail);
         Order GetOrdersForUserAsync(int id, string buyerEmail);
         Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
-        Task<Order> CreateOrderAsync(string email, Guid deliveryMethodId, string basketId, Address address);
+        Task<Order> CreateOrderAsync(string email, int deliveryMethodId, string basketId, Address address);
     }
 }

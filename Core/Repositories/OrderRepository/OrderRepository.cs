@@ -1,4 +1,4 @@
-﻿using Core.Context;
+﻿    using Core.Context;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Repositories.BasketRepository;
@@ -12,32 +12,28 @@ using System.Threading.Tasks;
 namespace Core.Repositories.OrderRepository
 {
 
-    public class OrderRepository : IOrderRepository //GenericRepository<Order>, 
+    public class OrderRepository : IOrderRepository 
 
     {
        
-        //private readonly IDeliveryMethodRepository _deliveryMethodRepo;
-        //private readonly IProductRepository _productRepo;
+       
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly StoreContext _storeContext;
 
-        public OrderRepository(IBasketRepository basketRepo, IUnitOfWork unitOfWork , StoreContext storeContext)
+        public OrderRepository(IBasketRepository basketRepo, IUnitOfWork unitOfWork , StoreContext storeContext) 
 
-            ////IDeliveryMethodRepository deliveryMethodRepo,
-            ////IProductRepository productRepo,  StoreContext storecontext) : base(storecontext)
+      
         {
             _unitOfWork = unitOfWork;
             _storeContext = storeContext;
-            ////_deliveryMethodRepo = deliveryMethodRepo;
-            ////_productRepo = productRepo;
             _basketRepo = basketRepo;
         
         }
 
        
 
-        public async Task<Order> CreateOrderAsync(string buyerEmail, Guid delieveryMethodId, string basketId, Address shippingAddress)
+        public async Task<Order> CreateOrderAsync(string buyerEmail, int delieveryMethodId, string basketId, Address shippingAddress)
         {
             //check for items in db for actual prices and data from basket
 
@@ -48,14 +44,14 @@ namespace Core.Repositories.OrderRepository
             var items = new List<OrderItem>();
             foreach (var item in basket.Items)
             {
-                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var productItem = await _unitOfWork.Repository<Product>().GetByGuidIdAsync(item.Id);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl);
-                var orderItem = new OrderItem(itemOrdered, productItem.Price, item.NumberOfItem);
+                var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
             }
 
             // get deliverey method from repo
-           var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(delieveryMethodId);
+           var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIntIdAsync(delieveryMethodId);
 
             // calc subtotal (linq)
             var subtotal = items.Sum(item => item.Price * item.Quantity);
