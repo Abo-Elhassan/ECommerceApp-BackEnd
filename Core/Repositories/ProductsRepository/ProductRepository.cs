@@ -15,23 +15,58 @@ namespace Core.Repositories.ProductsRepository
         }
         public async Task<Product> GetProductByIdCategoryAsync(Guid id)
         {
-            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c=>c.Id==id);
+            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c => c.Id==id);
         }
 
-        public async Task<List<Product>> GetProductByNameAsync(string name)
+        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductByNameAsync(string name, string searchQuery, int pageNum, int pageSize)
         {
-            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Name == name).ToListAsync();
+            var collection = _storecontext.Products as IQueryable<Product>;
+            if (!string.IsNullOrEmpty(name))
+            {
+                name=name.Trim();
+                collection = collection.Where(p => p.Name == name);
+            }
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery=searchQuery.Trim().ToLower();
+                collection = collection.Where(p => p.Name.Contains(searchQuery)|| (p.Description != null && p.Description.Contains(searchQuery)));
+            }
+
+            var totalItemCount = await collection.CountAsync();
+            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
+
+
+            var collectionToReturn = await collection.OrderBy(a => a.Name)
+                .Include(c => c.Category)
+                .Skip(pageSize * (pageNum-1))
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (collectionToReturn, paginationMetadata);
+
         }
 
-        public async Task<List<Product>> GetProductByPriceAsync(decimal minPrice, decimal maxPrice)
+        public async Task<List<Product>> GetProductByPriceAsync(decimal minPrice, decimal maxPrice, int pageNum, int pageSize)
         {
-            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Price >= minPrice && c.Price <= maxPrice).ToListAsync();
+            return await _storecontext.Products
+                .Where(c => c.Price >= minPrice && c.Price <= maxPrice)
+                .Include(c => c.Category)
+                .OrderBy(p => p.Price)
+                .Skip(pageSize * (pageNum-1))
+                .Take(pageSize)       
+                .ToListAsync();
         }
 
-        public async Task<List<Product>> GetProductByCategoryAsync(string categoryName)
+        public async Task<List<Product>> GetProductByCategoryAsync(string categoryName, int pageNum, int pageSize)
         {
-            return await _storecontext.Products.Include(p => p.Category).Where(c => c.Category.CategoryName == categoryName).ToListAsync();
+            return await _storecontext.Products.Include(p => p.Category)
+                .Where(c => c.Category.CategoryName == categoryName)
+                .Skip(pageSize * (pageNum-1))
+                .Take(pageSize)
+                .OrderBy(p => p.Name)
+                .Include(c => c.Category)
+                .ToListAsync();
         }
     }
-    
+
 }

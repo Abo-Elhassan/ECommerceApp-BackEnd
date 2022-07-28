@@ -36,7 +36,8 @@ namespace Core.Repositories.GenericRepository
             return navProp is null ? await _storecontext.Set<T>().Skip(skip).Take(takeParam).ToListAsync() :
                 await _storecontext.Set<T>().Include(navProp).Skip(skip).Take(takeParam).ToListAsync();
         }
-        public async Task<IReadOnlyList<T>> GetAllAsync<Tprop>(int pageNum, int takeParam, Expression<Func<T,Tprop>> navProp=null)
+
+        public async Task<List<T>> GetAllAsync<Tprop>(int pageNum, int takeParam, Expression<Func<T, Tprop>> navProp = null)
         {
             if (takeParam > 20)
             {

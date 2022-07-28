@@ -33,7 +33,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDTO basket)
         {
-            var customerBasket=_mapper.Map<CustomerBasketDTO,CustomerBasket>(basket);
+            var customerBasket=_mapper.Map<CustomerBasket>(basket);
             var updateBasket = await _basketRepository.UpdateBasket(customerBasket);
             return Ok(updateBasket);
         }
