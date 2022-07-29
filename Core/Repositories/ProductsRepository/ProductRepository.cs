@@ -46,55 +46,63 @@ namespace Core.Repositories.ProductsRepository
 
         }
 
-        public async Task<List<Product>> GetProductBySortAsync(string sort, int pageNum, int pageSize)
+        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductBySortAsync(string sort, int pageNum, int pageSize)
         {
+            var collection = _storecontext.Products as IQueryable<Product>;
+            var totalItemCount = await collection.CountAsync();
+            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
+
             if (sort == "name")
             {
-                return await _storecontext.Products
+                return (await collection
                 .Include(c => c.Category)
                 .OrderBy(p => p.Name)
                 .Skip(pageSize * (pageNum-1))
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(), paginationMetadata);
             }
             if (sort == "PriceAsc") { 
-            return await _storecontext.Products
+            return (await collection
                 .Include(c => c.Category)
                 .OrderBy(p => p.Price)
                 .Skip(pageSize * (pageNum-1))
                 .Take(pageSize)       
-                .ToListAsync();
+                .ToListAsync(), paginationMetadata);
             }
             if (sort == "PriceDesc") { 
-                return await _storecontext.Products
+                return (await collection
                     .Include(c => c.Category)
                     .OrderByDescending(p => p.Price)
                     .Skip(pageSize * (pageNum-1))
                     .Take(pageSize)
-                    .ToListAsync();
+                    .ToListAsync(), paginationMetadata);
             }
-            return await _storecontext.Products.ToListAsync();
+            return( await collection.ToListAsync(), paginationMetadata);
 
         }
 
-        public async Task<List<Product>> GetProductByCategoryAsync(string categoryName, int pageNum, int pageSize)
+        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductByCategoryAsync(string categoryName, int pageNum, int pageSize)
         {
+            var collection = _storecontext.Products as IQueryable<Product>;
+            var totalItemCount = await collection.CountAsync();
+            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
 
             if (categoryName == "All")
             {
-                return await _storecontext.Products.Skip(pageSize * (pageNum-1))
+                return (await _storecontext.Products.Skip(pageSize * (pageNum-1))
                 .Take(pageSize)
                 .OrderBy(p => p.Name)
                 .Include(c => c.Category)
-                .ToListAsync();
+                .ToListAsync(),paginationMetadata);
             }
-            return await _storecontext.Products.Include(p => p.Category)
+            return (await _storecontext.Products.Include(p => p.Category)
                 .Where(c => c.Category.CategoryName == categoryName)
                 .Skip(pageSize * (pageNum-1))
                 .Take(pageSize)
                 .OrderBy(p => p.Name)
                 .Include(c => c.Category)
-                .ToListAsync();
+                .ToListAsync(), paginationMetadata);
+
         }
 
         public async Task<List<Category>> GetCategories()
