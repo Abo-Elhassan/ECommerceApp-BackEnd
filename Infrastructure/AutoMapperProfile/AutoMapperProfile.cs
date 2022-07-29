@@ -1,7 +1,9 @@
-﻿using API.Helpers;
+﻿using API;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
+using Infrastructure.DTOs;
 using Infrastructure.DTOs.Account;
 using Infrastructure.DTOs.Basket;
 using Infrastructure.DTOs.Category;
@@ -17,6 +19,7 @@ namespace Infrastructure.AutoMapperProfile
         {
            
             CreateMap<Customer, UserReadDto>();
+            CreateMap<ProductParams, ProductParamDTO>();
 
             CreateMap<Product, ProductReadDTO>()
                 .ForMember(u => u.PictureUrl, o => o.MapFrom<ProductUrlResolver>());

@@ -1,7 +1,9 @@
 ﻿using Core.Context;
 using Core.Entities;
 using Core.Repositories.GenericRepository;
+using Core;
 using Microsoft.EntityFrameworkCore;
+using API;
 
 namespace Core.Repositories.ProductsRepository
 {
@@ -13,102 +15,65 @@ namespace Core.Repositories.ProductsRepository
         {
             _storecontext = storecontext;
         }
+        #region Get Product With Id
         public async Task<Product> GetProductByIdCategoryAsync(Guid id)
         {
-            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c => c.Id==id);
+            return await _storecontext.Products.Include(p => p.Category).FirstOrDefaultAsync(c => c.Id == id);
         }
+        #endregion
 
-        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductByNameAsync(string name, string searchQuery, int pageNum, int pageSize)
-        {
-            var collection = _storecontext.Products as IQueryable<Product>;
-            if (!string.IsNullOrEmpty(name))
-            {
-                name=name.Trim();
-                collection = collection.Where(p => p.Name == name || p.Category.CategoryName==name);
-            }
-            if (!string.IsNullOrWhiteSpace(searchQuery))
-            {
-                searchQuery=searchQuery.Trim().ToLower();
-                collection = collection.Where(p => p.Name.Contains(searchQuery)|| (p.Description != null && p.Description.Contains(searchQuery)));
-            }
-
-            var totalItemCount = await collection.CountAsync();
-            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
-
-
-            var collectionToReturn = await collection.OrderBy(a => a.Name)
-                .Include(c => c.Category)
-                .Skip(pageSize * (pageNum-1))
-                .Take(pageSize)
-                .ToListAsync();
-
-            return (collectionToReturn, paginationMetadata);
-
-        }
-
-        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductBySortAsync(string sort, int pageNum, int pageSize)
-        {
-            var collection = _storecontext.Products as IQueryable<Product>;
-            var totalItemCount = await collection.CountAsync();
-            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
-
-            if (sort == "name")
-            {
-                return (await collection
-                .Include(c => c.Category)
-                .OrderBy(p => p.Name)
-                .Skip(pageSize * (pageNum-1))
-                .Take(pageSize)
-                .ToListAsync(), paginationMetadata);
-            }
-            if (sort == "PriceAsc") { 
-            return (await collection
-                .Include(c => c.Category)
-                .OrderBy(p => p.Price)
-                .Skip(pageSize * (pageNum-1))
-                .Take(pageSize)       
-                .ToListAsync(), paginationMetadata);
-            }
-            if (sort == "PriceDesc") { 
-                return (await collection
-                    .Include(c => c.Category)
-                    .OrderByDescending(p => p.Price)
-                    .Skip(pageSize * (pageNum-1))
-                    .Take(pageSize)
-                    .ToListAsync(), paginationMetadata);
-            }
-            return( await collection.ToListAsync(), paginationMetadata);
-
-        }
-
-        public async Task<(IEnumerable<Product>, PaginationMetadata)> GetProductByCategoryAsync(string categoryName, int pageNum, int pageSize)
-        {
-            var collection = _storecontext.Products as IQueryable<Product>;
-            var totalItemCount = await collection.CountAsync();
-            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNum);
-
-            if (categoryName == "All")
-            {
-                return (await _storecontext.Products.Skip(pageSize * (pageNum-1))
-                .Take(pageSize)
-                .OrderBy(p => p.Name)
-                .Include(c => c.Category)
-                .ToListAsync(),paginationMetadata);
-            }
-            return (await _storecontext.Products.Include(p => p.Category)
-                .Where(c => c.Category.CategoryName == categoryName)
-                .Skip(pageSize * (pageNum-1))
-                .Take(pageSize)
-                .OrderBy(p => p.Name)
-                .Include(c => c.Category)
-                .ToListAsync(), paginationMetadata);
-
-        }
-
+        #region Get All Categories
         public async Task<List<Category>> GetCategories()
         {
             return await _storecontext.Categories.ToListAsync();
         }
+        #endregion
+
+        #region Multi-Purpose End-Point
+        public async Task<ProductParams> GetMulti(ProductParams prdParams)
+        {
+            var DBcollection = _storecontext.Products as IQueryable<Product>;
+            IQueryable<Product> returnCol = null;
+
+            if (prdParams.CategoryName == "All")
+            {
+                returnCol = DBcollection
+                            .OrderBy(p => p.Name)
+                            .Include(c => c.Category);
+                prdParams.TotalItemCount = await DBcollection.CountAsync();
+            }
+            if (prdParams.CategoryName != "All" && prdParams.CategoryName is not null)
+            {
+                returnCol = DBcollection.OrderBy(p => p.Name)
+                .Include(c => c.Category)
+                .Where(cp => cp.Category.CategoryName == prdParams.CategoryName);
+                prdParams.TotalItemCount = await returnCol.CountAsync();
+            }
+            if (prdParams.Sort == "PriceAsc")
+            {
+                returnCol = returnCol.OrderBy(c => c.Price);
+
+            }
+            if (prdParams.Sort == "PriceDesc")
+            {
+                returnCol = returnCol.OrderByDescending(c => c.Price);
+            }
+            if (!string.IsNullOrWhiteSpace(prdParams.SearchQuery))
+            {
+                prdParams.SearchQuery = prdParams.SearchQuery.Trim().ToLower();
+                returnCol = returnCol.Where(p => p.Name.Contains(prdParams.SearchQuery) || (p.Description != null && p.Description.Contains(prdParams.SearchQuery)));
+                prdParams.TotalItemCount = await returnCol.CountAsync();
+            }
+            {
+
+            }
+            prdParams.ProductsReturn = await returnCol
+                .Skip(prdParams.PageSize * (prdParams.PageNum - 1))
+                .Take(prdParams.PageSize).ToListAsync();
+            return prdParams;
+
+        } 
+        #endregion
     }
 
 }
