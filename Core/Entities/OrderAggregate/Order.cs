@@ -26,7 +26,7 @@ namespace Core.Entities.OrderAggregate
         public decimal Total
         {
             get {
-                return Subtotal + DeliveryMethod.Price;
+                return Subtotal + DeliveryMethod?.Price ?? 0;
                 }
         }
         public Order()

@@ -3,6 +3,7 @@ using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Repositories.BasketRepository;
 using Core.Repositories.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,7 +70,8 @@ namespace Core.Repositories.OrderRepository
             //delete basket
             await _basketRepo.DeleteBasket(basketId);
 
-            // return  order
+            // return  orde
+            order = await _storeContext.Orders.Include(o => o.DeliveryMethod).FirstOrDefaultAsync(o => o.Id == order.Id);
             return order;
         }
 
