@@ -39,7 +39,6 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductsWithCategory(int pageNum=1, int pageSize=10)
         {
             var listFromDb = await _productsRepository.GetAllAsync(pageNum, pageSize, m => m.Category);
-            //var listFromDb2 = await _productsRepository.GetAllAsync(pageNum, takes, "Category");// the second overload for GetAllAsync function
             return _mapper.Map<List<ProductReadDTO>>(listFromDb);
         }
         #endregion
@@ -93,26 +92,29 @@ namespace API.Controllers
             return Ok(_mapper.Map<List<ProductReadDTO>>(product));
         }
         #endregion
-        #region Search By Product Price
+        #region Sort By Product Price
         [HttpGet("category/price")]
         public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductByPrice(string sort, int pageNum = 1, int pageSize = 10)
         {
-            var product = await _productsRepository.GetProductBySortAsync(sort, pageNum, pageSize);
+            if (pageSize>20)
+            {
+                pageSize = 20;
+            }
+            var (product, paginationMetadata) = await _productsRepository.GetProductBySortAsync(sort, pageNum, pageSize);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            return _mapper.Map<List<ProductReadDTO>>(product);
+            return Ok(_mapper.Map<List<ProductReadDTO>>(product));
         }
         #endregion
         #region Search By Category Name
         [HttpGet("category/{categoryName}")]
         public async Task<ActionResult<IEnumerable<ProductReadDTO>>> GetProductByCategory(string categoryName, int pageNum = 1, int pageSize = 10)
         {
-            var product = await _productsRepository.GetProductByCategoryAsync(categoryName, pageNum, pageSize);
+            var (product, paginationMetadata) = await _productsRepository.GetProductByCategoryAsync(categoryName, pageNum, pageSize);
 
-            if (product is null)
-            {
-                return NotFound();
-            }
-            return _mapper.Map<List<ProductReadDTO>>(product);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return Ok(_mapper.Map<List<ProductReadDTO>>(product));
         }
         #endregion
 
