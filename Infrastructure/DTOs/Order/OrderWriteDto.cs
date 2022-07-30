@@ -16,6 +16,6 @@ namespace Infrastructure.DTOs.Order
         public int DeliveryMethodId { get; set; }
         [Required]
         public AddressDto ShipToAddress { get; set; }
-          public string BaId { get; set; }
+     
     }
 }

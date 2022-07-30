@@ -22,12 +22,9 @@ namespace Core.Entities.OrderAggregate
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string PaymentIntentId { get; set; }
 
-        [Column(TypeName = "money")]
-        public decimal Total
+        public decimal GetTotal()
         {
-            get {
-                return Subtotal + DeliveryMethod?.Price ?? 0;
-                }
+            return Subtotal + DeliveryMethod?.Price ?? 0;
         }
         public Order()
          {
