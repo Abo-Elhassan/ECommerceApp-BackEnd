@@ -64,9 +64,6 @@ namespace Core.Repositories.ProductsRepository
                 returnCol = returnCol.Where(p => p.Name.Contains(prdParams.SearchQuery) || (p.Description != null && p.Description.Contains(prdParams.SearchQuery)));
                 prdParams.TotalItemCount = await returnCol.CountAsync();
             }
-            {
-
-            }
             prdParams.ProductsReturn = await returnCol
                 .Skip(prdParams.PageSize * (prdParams.PageNum - 1))
                 .Take(prdParams.PageSize).ToListAsync();
