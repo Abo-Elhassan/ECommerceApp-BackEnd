@@ -5,7 +5,6 @@ namespace Core.Entities
 {
     public class Customer : IdentityUser<Guid>
     {
-
         [Required]
         [StringLength(20)]
         public string FirstName { get; set; }

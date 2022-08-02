@@ -10,6 +10,12 @@ namespace Infrastructure.DTOs.Account
     public class RegisterDto
     {
         [Required]
+        [StringLength(20)]
+        public string FirstName { get; set; }
+        [Required]
+        [StringLength(20)]
+        public string LastName { get; set; }
+        [Required]
         [StringLength(50)]
         public string UserName { get; set; }
      
@@ -21,12 +27,7 @@ namespace Infrastructure.DTOs.Account
         public string Password { get; set; }
         [RegularExpression("01[0-9]{9}")]
         public string PhoneNumber { get; set; }
-        [Required]
-        [StringLength(20)]
-        public string FirstName { get; set; }
-        [Required]
-        [StringLength(20)]
-        public string LastName { get; set; }
+        
        
     }
 }

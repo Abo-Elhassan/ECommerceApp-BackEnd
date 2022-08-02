@@ -9,8 +9,7 @@ namespace Infrastructure.DTOs.Account
     public class TokenDto
     {
         
-        public string Email { get; set; }
-        public string Token { get; set; }
+        public string Value { get; set; }
         public DateTime ExpireDate { get; set; }
     }
 }

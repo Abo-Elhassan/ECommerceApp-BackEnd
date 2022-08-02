@@ -18,7 +18,7 @@ namespace Infrastructure.AutoMapperProfile
         public AutoMapperProfile()
         {
            
-            CreateMap<Customer, UserReadDto>();
+            CreateMap<Customer, UserDto>();
             CreateMap<ProductParams, ProductParamDTO>();
 
             CreateMap<Product, ProductReadDTO>()

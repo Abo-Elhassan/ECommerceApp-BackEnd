@@ -20,27 +20,39 @@ namespace API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-
+        private readonly ITokenService _tokenService;
         private readonly UserManager<Customer> _userManager;
         private readonly IMapper _mapper;
 
-        public AccountController( UserManager<Customer> userManager, IMapper mapper)
+        public AccountController(ITokenService tokenService, UserManager<Customer> userManager, IMapper mapper)
         {
-     
+            _tokenService = tokenService;
             _userManager = userManager;
             _mapper = mapper;
         }
 
        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserReadDto>> GetCurrentUser()
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var email = HttpContext.User?.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
-            return _mapper.Map<UserReadDto>(user);
+
+            return new UserDto
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = await _tokenService.CreateToken(user)
+            };
         }
 
-        
+        [HttpGet]
+        [Route("emailexists")]
+        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
+        }
+
         [Authorize]
         [HttpGet]
         [Route("address")]
@@ -131,7 +143,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult> Login(LoginDto credentials)
+        public async Task<ActionResult<UserDto>> Login(LoginDto credentials)
         {
             var loggingUser = await _userManager.FindByEmailAsync(credentials.Email);
 
@@ -146,30 +158,36 @@ namespace API.Controllers
             {
                 return Unauthorized();
             }
+            
+            return new UserDto
+            {
+                UserName = loggingUser.UserName,
+                Email = loggingUser.Email,
+                Token = await _tokenService.CreateToken(loggingUser)
+            };
 
-        
-            var claims = await _userManager.GetClaimsAsync(loggingUser);
-
-           
-            var keyWithAlgorithm = new SigningCredentials(TokenService.GetKey(), SecurityAlgorithms.HmacSha256);
+            //var claims = await _userManager.GetClaimsAsync(loggingUser);
 
 
-            var expDate = DateTime.Now.AddHours(1);
-            var myJWT = new JwtSecurityToken(
-                claims: claims,
-                signingCredentials: keyWithAlgorithm,
-                expires: expDate);
+            //var keyWithAlgorithm = new SigningCredentials(TokenService.GetKey(), SecurityAlgorithms.HmacSha256);
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            return Ok(
-                new TokenDto
-                {
-                    
-                    Email = loggingUser.Email,
-                    Token = tokenHandler.WriteToken(myJWT),
-                    ExpireDate = expDate
-                });
-           
+
+            //var expDate = DateTime.Now.AddHours(1);
+            //var myJWT = new JwtSecurityToken(
+            //    claims: claims,
+            //    signingCredentials: keyWithAlgorithm,
+            //    expires: expDate);
+
+            //var tokenHandler = new JwtSecurityTokenHandler();
+            //return Ok(
+            //    new TokenDto
+            //    {
+
+            //        Email = loggingUser.Email,
+            //        Token = tokenHandler.WriteToken(myJWT),
+            //        ExpireDate = expDate
+            //    });
+
 
         }
     }

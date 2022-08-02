@@ -108,6 +108,7 @@ builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 
