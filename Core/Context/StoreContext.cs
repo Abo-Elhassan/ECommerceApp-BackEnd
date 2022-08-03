@@ -280,6 +280,44 @@ namespace Core.Context
 
             #endregion
 
+            #region Seeding Delivery Methods 
+
+            modelBuilder.Entity<DeliveryMethod>().HasData(
+                new DeliveryMethod
+                {
+                    Id=1,
+                    ShortName="Super Sonic",
+                    Description= "Fastest delivery method",
+                    DeliveryTime= "1-2 Days",
+                    Price = 75
+                },
+                new DeliveryMethod
+                {
+                    Id = 2,
+                    ShortName = "Sonic",
+                    Description = "Get it within 5 days",
+                    DeliveryTime = "2-5 Days",
+                    Price = 50
+                },
+                new DeliveryMethod
+                {
+                    Id = 3,
+                    ShortName = "Regular",
+                    Description = "Longer times in exchange for cheaper price",
+                    DeliveryTime = "5-10 Days",
+                    Price = 25
+                },
+                new DeliveryMethod
+                {
+                    Id = 4,
+                    ShortName = "Slow",
+                    Description = "Pay nothing but wait alot",
+                    DeliveryTime = "1-2 Weeks",
+                    Price = 0
+                }
+                );
+            #endregion
+
         }
 
     }
