@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
 {
@@ -12,6 +13,6 @@ namespace Core.Entities
         [StringLength(20)]
         public string LastName { get; set; }
 
-        public virtual Address Address { get; set; }
+        public ICollection<Address> Address { get; set; } = new HashSet<Address>();
     }
 }

@@ -56,36 +56,33 @@ namespace API.Controllers
         [Authorize]
         [HttpGet]
         [Route("address")]
-        public async Task<ActionResult<AddressDto>> GetCurrentUserAddress()
+        public async Task<ActionResult<List<AddressDto>>> GetCurrentUserAddress()
         {
 
             var user = await _userManager.FindUserByEmailIncludeAddress(HttpContext.User);
-            return _mapper.Map<AddressDto>(user.Address); ;
+            return _mapper.Map<List<AddressDto>>(user.Address); ;
         }
 
 
         [Authorize]
         [HttpPut]
         [Route("address")]
-        public async Task<ActionResult<Address>> UpdateCurrentUserAddress(AddressDto address)
+        public async Task<ActionResult<Address>> UpdateCurrentUserAddress(List<AddressDto> address)
         {
 
             var user = await _userManager.FindUserByEmailIncludeAddress(HttpContext.User);
-            user.Address = _mapper.Map<Address>(address);
+            user.Address = _mapper.Map<List<Address>>(address);
             var result = await _userManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
-                return Ok(_mapper.Map<AddressDto>(user.Address));
+                return Ok(_mapper.Map<List<AddressDto>>(user.Address));
             }
             else
             {
                 return BadRequest();
             }
         }
-
-   
-
         [HttpPost]
         [Route("admin/register")]
         public async Task<ActionResult> RegisterAdmin(RegisterDto registerDTO)

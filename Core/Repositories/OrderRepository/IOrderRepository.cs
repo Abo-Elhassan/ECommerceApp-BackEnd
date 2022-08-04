@@ -10,12 +10,11 @@ namespace Core.Repositories.OrderRepository
 {
     public interface IOrderRepository
     {
-
-        
-       
         IReadOnlyList<Order> GetOrdersForUserAsync(string buyerEmail);
         Order GetOrdersForUserAsync(int id, string buyerEmail);
-        Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync();
+        Task<DeliveryMethod> GetDeliveryMethodsAsync(int deliveryId);
         Task<Order> CreateOrderAsync(string email, int deliveryMethodId, string basketId, Address address);
+        Task<List<DeliveryMethod>> GetAllDeliveryMethodsAsync();
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Core.Entities.OrderAggregate;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
@@ -21,6 +22,7 @@ namespace Core.Entities
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 
+        public ICollection<OrderItem> orderItems { get; set; } = new HashSet<OrderItem>();
 
 
 

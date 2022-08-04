@@ -15,19 +15,27 @@ namespace Core.Entities.OrderAggregate
         {
         }
 
-        public OrderItem(ProductItemOrdered itemOrdered, decimal price, int quantity)
+        public OrderItem(Guid productId, decimal price, int quantity,string productName, string pictureUrl)
         {
-            
-            ItemOrdered = itemOrdered;
+
+            ProductId = productId;
             Price = price;
             Quantity = quantity;
+            ProductName=productName;
+            PictureUrl = pictureUrl;
         }
         public int Id { get; set; }
-        public ProductItemOrdered ItemOrdered { get; set; }
 
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+
+        [ForeignKey("Product")]
+        public Guid ProductId { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string PictureUrl { get; set; }
 
     }
 }

@@ -21,8 +21,7 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<Customer> _userManager;
 
-        public OrdersController(IOrderRepository orderRepository, IMapper mapper,
-            UserManager<Customer> userManager)
+        public OrdersController(IOrderRepository orderRepository, IMapper mapper,UserManager<Customer> userManager)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
@@ -36,12 +35,10 @@ namespace API.Controllers
             var loggedInCutomer = await _userManager.GetUserAsync(User);
 
             var address = _mapper.Map<Address>(orderDto.ShipToAddress);
-            address.CustomerId = loggedInCutomer.Id;
             address.Customer = loggedInCutomer;
 
             var order = await _orderRepository.CreateOrderAsync(loggedInCutomer.Email, orderDto.DeliveryMethodId, orderDto.BasketId, address);
 
-            //validation for empty order
             if (order == null)
             {
                 return BadRequest(new ApiResponse(400, "Problem creating order"));
@@ -75,9 +72,9 @@ namespace API.Controllers
         }
 
         [HttpGet("deliveryMethods")]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        public async Task<ActionResult<List<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return Ok(await _orderRepository.GetDeliveryMethodsAsync());
+            return Ok(await _orderRepository.GetAllDeliveryMethodsAsync());
         }
     }
 }

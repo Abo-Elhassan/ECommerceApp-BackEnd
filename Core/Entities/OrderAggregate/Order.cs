@@ -19,9 +19,6 @@ namespace Core.Entities.OrderAggregate
 
         [Column(TypeName = "money")]
         public decimal Subtotal { get; set; }
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public string PaymentIntentId { get; set; }
-
         public decimal GetTotal()
         {
             return Subtotal + DeliveryMethod?.Price ?? 0;
@@ -41,8 +38,5 @@ namespace Core.Entities.OrderAggregate
             Subtotal = subtotal;
            
         }
-
-
-           
         }
     }

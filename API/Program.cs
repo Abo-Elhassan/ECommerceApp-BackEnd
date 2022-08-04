@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Identity;
 using Infrastructure.Services.Token;
 using StackExchange.Redis;
 using Core.Repositories.OrderRepository;
-using Core.Repositories.UnitOfWork;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 
@@ -66,9 +65,6 @@ builder.Services.AddSwaggerGen(c =>
 #endregion
 
 #region Cors 
-
-//var allowAll = "AllowAll";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -91,10 +87,6 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
     return ConnectionMultiplexer.Connect(Configuration);
 });
 
-
-
-//builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = configuration["RedisCacheUrl"]; });
-
 #endregion
 
 #region Reposatories
@@ -104,14 +96,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
-//builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-
-
-
 #endregion
 
 #region AutoMapper

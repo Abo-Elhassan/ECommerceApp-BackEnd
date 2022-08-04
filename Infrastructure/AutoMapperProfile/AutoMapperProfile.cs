@@ -7,7 +7,6 @@ using Infrastructure.DTOs;
 using Infrastructure.DTOs.Account;
 using Infrastructure.DTOs.Basket;
 using Infrastructure.DTOs.Category;
-
 using Infrastructure.DTOs.Order;
 using Infrastructure.DTOs.Product;
 
@@ -34,12 +33,8 @@ namespace Infrastructure.AutoMapperProfile
 
             CreateMap<CustomerBasketDTO, CustomerBasket>();
 
-            //there's no an address class 
             CreateMap<AddressDto, Address>();
-            CreateMap<Address, AddressDto > ();
-
-
-
+            CreateMap<Address, AddressDto>();
         }
     }
 }
