@@ -36,7 +36,7 @@ namespace Infrastructure.Services.Token
             var keyWithAlgorithm = new SigningCredentials(TokenService.GetKey(), SecurityAlgorithms.HmacSha256);
 
 
-            var expDate = DateTime.Now.AddHours(1);
+            var expDate = DateTime.Now.AddYears(1);
             var myJWT = new JwtSecurityToken(
                 claims: claims,
                 signingCredentials: keyWithAlgorithm,

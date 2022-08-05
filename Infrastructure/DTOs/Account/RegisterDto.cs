@@ -18,15 +18,22 @@ namespace Infrastructure.DTOs.Account
         [Required]
         [StringLength(50)]
         public string UserName { get; set; }
-     
+
+        [RegularExpression("01[0-9]{9}")]
+        public string PhoneNumber { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
       
         [Required]
         public string Password { get; set; }
-        [RegularExpression("01[0-9]{9}")]
-        public string PhoneNumber { get; set; }
+
+        [Required]
+        public string ConfirmPassword { get; set; }
+
+
+        
         
        
     }
