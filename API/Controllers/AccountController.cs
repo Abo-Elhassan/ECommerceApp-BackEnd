@@ -146,7 +146,7 @@ namespace API.Controllers
 
             if (loggingUser is null)
             {
-                return NotFound();
+                return BadRequest("User Not Found");
             }
 
             var isAuthorized = await _userManager.CheckPasswordAsync(loggingUser, credentials.Password);
